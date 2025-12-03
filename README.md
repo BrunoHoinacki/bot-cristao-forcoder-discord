@@ -187,9 +187,11 @@ curl -X POST http://localhost:3000/trigger/daily-verse
 ```
 
 Exemplo:
+```bash
 0 8 * * * → envia às 08:00
 0 */2 * * * → a cada 2 horas
 */5 * * * * → a cada 5 minutos (para testes)
+```
 ---
 
 # 💬 7. Comandos disponíveis
