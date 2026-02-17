@@ -1,6 +1,8 @@
 const express = require("express");
 const logger = require("./utils/logger");
 const { getRandomVerseWithReflection } = require("./services/bibleService");
+const { sendWhatsViaN8n } = require("./services/n8nWhatsService");
+
 
 function startServer(client) {
   const app = express();
@@ -23,6 +25,17 @@ function startServer(client) {
         `> ${verse}\n\n` +
         `💡 ${reflection}`
       );
+
+      const to = process.env.WHATS_GROUP_JID;
+      if (to) {
+        const text =
+          `🌿 *Cristo Vive*\n\n` +
+          `📖 *${reference}*\n` +
+          `${verse}\n\n` +
+          `💬 ${reflection}`;
+
+        await sendWhatsViaN8n({ to, text });
+      }
 
       res.json({ ok: true });
     } catch (err) {
