@@ -1,69 +1,130 @@
+// /home/bruno/Code/bot-cristao-forcoder-discord/src/services/reflectionService.js
 const REFLECTIONS = {
   verdade:
-    "A verdade de Cristo não é um conceito: é um encontro. E encontros mudam destinos.",
+    "A verdade de Cristo não apenas informa transforma. Quando a verdade entra, as mentiras perdem força.",
+
+  palavra:
+    "A Palavra não é só leitura é alimento. Quando você se expõe à Escritura, Deus ajusta o coração e fortalece a fé.",
 
   provisao:
-    "Quando Deus é o pastor, a provisão não é apenas material — é emocional, espiritual e eterna.",
+    "Deus não promete luxo; promete cuidado. Quem confia no Pastor aprende a descansar na provisão diária.",
 
   ansiedade:
-    "A ansiedade perde força quando lembramos que Deus já está no amanhã que tememos.",
+    "Ansiedade é tentar controlar o que pertence a Deus. Entregar é um ato de fé e fé traz paz.",
 
   coragem:
-    "Coragem não é ausência de medo; é saber que Deus caminha no vale junto contigo.",
+    "Coragem cristã não é imprudência; é confiança na presença de Deus mesmo no desconhecido.",
 
   proposito:
-    "Os planos de Deus não falham porque Ele não improvisa — Ele guia.",
+    "Deus escreve histórias eternas com capítulos que você ainda não entende.",
+
+  direcao:
+    "Deus guia passo a passo. Você não precisa enxergar o caminho inteiro só obedecer a luz que já recebeu hoje.",
 
   mente:
-    "A mente renovada não pensa menos no mundo, mas pensa mais como Cristo.",
+    "A renovação da mente começa quando a Palavra passa a ter mais autoridade que suas emoções.",
 
   refugio:
-    "Deus não é fuga: é abrigo. É onde tua alma aprende a respirar novamente.",
+    "Em Deus você não se esconde do mundo você se fortalece para enfrentá-lo.",
 
   confianca:
-    "Confiar é descansar no que Deus pode fazer, não no que você consegue controlar.",
+    "Confiança é obedecer mesmo quando o resultado ainda não é visível.",
 
   descanso:
-    "Jesus não oferece mais tarefas, Ele oferece descanso para a alma cansada.",
+    "Descansar em Cristo é confiar que Ele já venceu o que você ainda teme.",
 
   socorro:
-    "O socorro de Deus não atrasa — ele chega no tempo perfeito.",
+    "O socorro do Senhor é firme. Ele não se atrasa Ele prepara.",
 
   paz:
-    "A paz de Cristo não depende de circunstâncias, mas de presença.",
+    "A paz de Deus é estabilidade interior em meio ao caos exterior.",
 
   forca:
-    "Deus não renova apenas forças: Ele renova perspectivas.",
+    "Força espiritual nasce da dependência, não da autossuficiência.",
 
   cura:
-    "Coração quebrado para Deus não é problema; é matéria-prima.",
+    "Deus não ignora feridas Ele transforma cicatrizes em testemunho.",
 
   prioridade:
-    "Buscar o Reino primeiro não tira nada de você — organiza tudo dentro de você.",
+    "Quando Deus ocupa o primeiro lugar, todo o resto encontra equilíbrio.",
 
   guerra:
-    "A guerra espiritual é real, mas a armadura também é. Você não está desarmado.",
+    "A batalha espiritual não se vence na força humana, mas na rendição diária a Deus.",
 
   graca:
-    "A graça não é recompensa por força; é resposta para fraqueza.",
+    "A graça é Deus fazendo por você o que você jamais conseguiria fazer sozinho.",
 
   protecao:
-    "A sombra do Onipotente não escurece a vida — refresca a alma.",
+    "A presença de Deus é escudo invisível e direção segura.",
 
   alegria:
-    "A alegria do Senhor não ignora a dor, mas a ilumina.",
+    "Alegria bíblica não é emoção passageira é convicção de que Deus governa.",
+
+  gratidao:
+    "Gratidão muda a perspectiva antes mesmo de mudar a circunstância.",
 
   intimidade:
-    "Quem dá um passo em direção a Deus descobre que Ele já tinha caminhado mil em sua direção.",
+    "Intimidade com Deus cresce na constância, não na intensidade momentânea.",
+
+  oracao:
+    "Oração não é performance; é dependência. Mesmo poucas palavras sinceras abrem espaço para Deus trabalhar em você.",
+
+  luz:
+    "Ser luz não é chamar atenção para si, mas refletir Cristo em atitudes.",
+
+  animo:
+    "Ânimo cristão nasce da certeza de que Cristo venceu o mundo.",
+
+  espirito:
+    "O fruto do Espírito é evidência de permanência em Deus, não de esforço humano.",
 
   amor:
-    "O amor de Deus não afasta o medo por força, mas por presença."
+    "O amor de Deus não depende do seu desempenho depende do caráter dEle.",
+
+  perdao:
+    "Perdão não é dizer que não doeu; é entregar a justiça nas mãos de Deus e escolher não viver preso ao passado.",
+
+  fe:
+    "Fé não é negar a realidade é confiar que Deus está acima dela.",
+
+  obediencia:
+    "Obediência pode parecer pequena, mas carrega consequências eternas.",
+
+  santidade:
+    "Santidade não é perfeição; é separação intencional para viver o propósito de Deus.",
+
+  perseveranca:
+    "Perseverar é continuar caminhando quando seria mais fácil desistir.",
+
+  sabedoria:
+    "Sabedoria bíblica é aplicar a verdade no cotidiano, mesmo quando ninguém está olhando.",
+
+  humildade:
+    "Humildade é reconhecer que tudo o que você é e tem vem de Deus.",
+
+  esperanca:
+    "Esperança cristã não é otimismo; é certeza de que Deus continua bom, mesmo quando o cenário não parece.",
+
+  identidade:
+    "Sua identidade não está no que você fez ou falhou está em quem Cristo diz que você é: amado, perdoado e refeito.",
+
+  familia:
+    "Família é campo de discipulado. Amar, servir e perdoar em casa é uma forma forte de viver o Evangelho.",
+
+  trabalho:
+    "Trabalho também é altar. Quando você serve com excelência e integridade, você adora a Deus no ordinário do dia.",
+
+  generosidade:
+    "Generosidade quebra o poder do ego. Dar com alegria é declarar: Deus é minha fonte, não o que eu acumulo.",
+
+  discipulado:
+    "Seguir Jesus é mais que admirar é praticar. Discipulado é escolher a cruz diariamente e caminhar com Ele."
 };
 
 function getReflectionByTag(tag) {
   return (
     REFLECTIONS[tag] ||
-    "Deus conhece o teu coração melhor do que qualquer algoritmo. Confia nEle hoje."
+    "Confie no Senhor hoje. Ele já está à frente do que você ainda está enfrentando."
   );
 }
 
