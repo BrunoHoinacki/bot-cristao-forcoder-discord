@@ -14,6 +14,7 @@ async function initDiscordClient() {
   });
 
   client.commands = new Collection();
+  client.slashCommands = new Collection();
 
   // Carrega comandos
   const commandsPath = path.join(__dirname, "commands");
@@ -24,6 +25,21 @@ async function initDiscordClient() {
     if (command.data && command.execute) {
       client.commands.set(command.data.name, command);
       logger.info(`Comando carregado: ${command.data.name}`);
+    }
+  }
+
+  const slashCommandsPath = path.join(__dirname, "slashCommands");
+  if (fs.existsSync(slashCommandsPath)) {
+    const slashCommandFiles = fs
+      .readdirSync(slashCommandsPath)
+      .filter(file => file.endsWith(".js"));
+
+    for (const file of slashCommandFiles) {
+      const command = require(path.join(slashCommandsPath, file));
+      if (command.data && command.execute) {
+        client.slashCommands.set(command.data.name, command);
+        logger.info(`Slash command carregado: ${command.data.name}`);
+      }
     }
   }
 

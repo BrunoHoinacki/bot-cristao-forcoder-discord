@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 const { getRandomVerseWithReflection } = require("../services/bibleService");
 const { sendWhatsViaN8n } = require("../services/n8nWhatsService");
+const { getAllGuildConfigs } = require("../services/guildConfigService");
 const logger = require("../utils/logger");
 
 function formatDiscord({ verse, reference, reflection }) {
@@ -36,13 +37,35 @@ function scheduleDailyVerseJob(client) {
 
   cron.schedule(expression, async () => {
     try {
-      const channelId = process.env.DAILY_VERSE_CHANNEL_ID;
-      const channel = await client.channels.fetch(channelId);
+      const guildConfigs = getAllGuildConfigs();
+      const entries = Object.entries(guildConfigs);
+
+      if (!entries.length) {
+        logger.warn("Nenhum servidor configurado para envio automático.");
+        return;
+      }
 
       const data = getRandomVerseWithReflection();
+      let sentCount = 0;
 
-      // 1) Discord
-      await channel.send(formatDiscord(data));
+      // 1) Discord (todos os servidores configurados)
+      for (const [guildId, channelId] of entries) {
+        try {
+          const channel = await client.channels.fetch(channelId);
+          if (!channel || !channel.isTextBased()) {
+            logger.warn(`Canal inválido para guild ${guildId}: ${channelId}`);
+            continue;
+          }
+
+          await channel.send(formatDiscord(data));
+          sentCount += 1;
+        } catch (err) {
+          logger.error(
+            `Erro ao enviar devocional para guild ${guildId} (canal ${channelId}):`,
+            err
+          );
+        }
+      }
 
       // 2) WhatsApp via n8n
       const to = process.env.WHATS_GROUP_JID;
@@ -53,7 +76,7 @@ function scheduleDailyVerseJob(client) {
         await sendWhatsViaN8n({ to, text });
       }
 
-      logger.info("Devocional enviado (Discord + WhatsApp).");
+      logger.info(`Devocional enviado em ${sentCount} servidor(es) (Discord + WhatsApp).`);
     } catch (err) {
       logger.error("Erro ao enviar devocional:", err);
     }

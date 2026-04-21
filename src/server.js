@@ -2,6 +2,7 @@ const express = require("express");
 const logger = require("./utils/logger");
 const { getRandomVerseWithReflection } = require("./services/bibleService");
 const { sendWhatsViaN8n } = require("./services/n8nWhatsService");
+const { getAllGuildConfigs } = require("./services/guildConfigService");
 
 
 function startServer(client) {
@@ -15,16 +16,41 @@ function startServer(client) {
   // Endpoint para disparar versículo manualmente (ex: webhook, teste)
   app.post("/trigger/daily-verse", async (req, res) => {
     try {
-      const channelId = process.env.DAILY_VERSE_CHANNEL_ID;
-      const channel = await client.channels.fetch(channelId);
+      const guildConfigs = getAllGuildConfigs();
+      const entries = Object.entries(guildConfigs);
+
+      if (!entries.length) {
+        res.status(400).json({
+          ok: false,
+          error: "Nenhum servidor configurado. Use /configurar_canal."
+        });
+        return;
+      }
 
       const { verse, reference, reflection } = getRandomVerseWithReflection();
+      let sentCount = 0;
 
-      await channel.send(
-        `📖 **${reference}**\n` +
-        `> ${verse}\n\n` +
-        `💡 ${reflection}`
-      );
+      for (const [guildId, channelId] of entries) {
+        try {
+          const channel = await client.channels.fetch(channelId);
+          if (!channel || !channel.isTextBased()) {
+            logger.warn(`Canal inválido para guild ${guildId}: ${channelId}`);
+            continue;
+          }
+
+          await channel.send(
+            `📖 **${reference}**\n` +
+              `> ${verse}\n\n` +
+              `💡 ${reflection}`
+          );
+          sentCount += 1;
+        } catch (err) {
+          logger.error(
+            `Erro ao disparar versículo para guild ${guildId} (canal ${channelId}):`,
+            err
+          );
+        }
+      }
 
       const to = process.env.WHATS_GROUP_JID;
       if (to) {
@@ -37,7 +63,7 @@ function startServer(client) {
         await sendWhatsViaN8n({ to, text });
       }
 
-      res.json({ ok: true });
+      res.json({ ok: true, sentCount });
     } catch (err) {
       logger.error("Erro ao disparar versículo via HTTP:", err);
       res.status(500).json({ ok: false });

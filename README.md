@@ -11,7 +11,7 @@ O propósito é unir **fé e tecnologia**, oferecendo um bot que envia versícul
 
 * 📖 **Versículo diário automático** (cron às 08:00 — ajustável)
 * 💡 **Reflexões curtas baseadas na Bíblia**
-* ✨ **Comando `!versiculo`** para receber uma mensagem devocional instantânea
+* ✨ **Slash commands** (`/versiculo`, `/configurar_canal`, etc.)
 * ⚙️ **Servidor Express para healthcheck e triggers manuais**
 * 🐳 **Deploy completo com Docker + Docker Compose**
 * 🏗️ Arquitetura organizada (comandos, eventos, serviços, jobs)
@@ -115,16 +115,16 @@ Crie o arquivo `.env` na raiz:
 ```env
 DISCORD_TOKEN=SEU_TOKEN_AQUI
 DISCORD_CLIENT_ID=ID_DO_APP
-DISCORD_GUILD_ID=ID_DO_SERVIDOR
-DAILY_VERSE_CHANNEL_ID=ID_DO_CANAL_PARA_VERSICULO
 PORT=3000
 TZ=America/Sao_Paulo
 NODE_ENV=development
 ```
 
-Para descobrir o **ID do canal**, ative o "Developer Mode" no Discord:
-*Settings → Advanced → Developer Mode → ON*
-Depois clique com botão direito no canal → **Copy ID**
+Depois de adicionar o bot ao servidor, configure o canal com:
+
+```bash
+/configurar_canal canal:#nome-do-canal
+```
 
 ---
 
@@ -196,14 +196,14 @@ Exemplo:
 
 # 💬 7. Comandos disponíveis
 
-### `!ping`
+### `/ping`
 
 Testa se o bot está vivo.
 Resposta:
 
 > 🏓 Pong! Estou vivo e orando em background.
 
-### `!versiculo`
+### `/versiculo`
 
 Retorna um versículo aleatório com reflexão devocional.
 
@@ -215,6 +215,18 @@ Exemplo:
 
 💡 A verdade de Cristo não é só uma ideia — é uma pessoa.
 ```
+
+### `/configurar_canal`
+
+Define o canal de envio automático para aquele servidor.
+
+### `/status_canal`
+
+Mostra qual canal está configurado no servidor.
+
+### `/desativar_canal`
+
+Desativa os envios automáticos naquele servidor.
 
 ---
 
