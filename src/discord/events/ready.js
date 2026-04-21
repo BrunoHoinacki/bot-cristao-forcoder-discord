@@ -1,7 +1,7 @@
 const logger = require("../../utils/logger");
 
 module.exports = {
-  name: "ClientReady",
+  name: "clientReady",
   once: true,
   async execute(client) {
     if (client.slashCommands?.size) {
