@@ -15,6 +15,8 @@ O propósito é unir **fé e tecnologia**, oferecendo um bot que envia versícul
 * ⚙️ **Servidor Express para healthcheck e triggers manuais**
 * 🐳 **Deploy completo com Docker + Docker Compose**
 * 🏗️ Arquitetura organizada (comandos, eventos, serviços, jobs)
+* 📊 **Monitoramento de Logs**: Sistema de logs centralizado em canal do Discord.
+* ☁️ **Persistência com Supabase**: Configurações salvas em banco de dados para multi-servidor.
 
 ---
 
@@ -23,58 +25,30 @@ O propósito é unir **fé e tecnologia**, oferecendo um bot que envia versícul
 Siga este passo a passo para criar o app, gerar o token e permitir que o bot entre em seu servidor.
 
 ### 1. Acesse o portal
-
 ➡️ [https://discord.com/developers/applications](https://discord.com/developers/applications)
 
 ### 2. Crie um novo aplicativo
-
 * Clique em **New Application**
 * Nomeie como desejar (ex: **Bot Cristão**)
 
 ### 3. Vá em **Bot** → **Add Bot**
 
-* Confirme “Yes, do it!”
-* O bot será criado.
-
 ### 4. Ative permissões importantes
-
 Ainda na aba **Bot**:
-
-Ative:
-
 * **Public Bot** (opcional)
 * **Presence Intent**
 * **Server Members Intent**
-* **Message Content Intent** ✔️ *necessário para ler mensagens*
+* **Message Content Intent** ✔️
 
 ### 5. Pegue o **TOKEN DO BOT**
-
 * Em **Bot** → clique **Reset Token**
-* Copie e cole no seu `.env` como:
 
-```
-DISCORD_TOKEN=SEU_TOKEN_AQUI
-```
-
-> ⚠️ Nunca exponha o token no Git!
-
-### 6. Crie o link para adicionar o bot ao servidor
-
-Vá em **OAuth2 → URL Generator**:
-
-Marque:
-
-* **bot**
-* **applications.commands**
-
-Em **Bot Permissions**, selecione:
-
-* Send Messages
-* Read Message History
-* View Channels
-* Use Slash Commands
-
-Copie o link gerado, cole no navegador e escolha o servidor onde o bot irá entrar.
+### 6. Defina as permissões do Bot
+Para que os logs e o envio de mensagens funcionem, o bot precisa de permissões explícitas no servidor/canal:
+* **Ver Canais**
+* **Enviar Mensagens**
+* **Inserir Links** (Essencial para os Embeds e Logs)
+* **Ver Histórico de Mensagens**
 
 ---
 
@@ -91,19 +65,18 @@ bot-cristao-discord/
    ├─ server.js
    ├─ discord/
    │  ├─ client.js
-   │  ├─ commands/
-   │  │  ├─ ping.js
-   │  │  └─ versiculo.js
-   │  └─ events/
-   │     ├─ ready.js
-   │     └─ messageCreate.js
+   │  ├─ commands/           # Comandos de mensagem (!ping)
+   │  ├─ slashCommands/      # Comandos de barra (/versiculo)
+   │  └─ events/             # ready, interactionCreate, messageCreate, etc.
    ├─ jobs/
-   │  └─ dailyVerseJob.js
+   │  └─ dailyVerseJob.js    # Cron jobs (agendamentos)
    ├─ services/
-   │  ├─ bibleService.js
-   │  └─ reflectionService.js
+   │  ├─ discordLogService.js # Sistema de logs centralizado no Discord
+   │  ├─ guildConfigService.js # Gestão de banco (Supabase/JSON)
+   │  └─ bibleService.js
    └─ utils/
-      └─ logger.js
+      ├─ logger.js           # Logger de console
+      └─ messageHelper.js    # Formatador de Embeds e Botões
 ```
 
 ---
@@ -125,203 +98,23 @@ TZ=America/Sao_Paulo
 NODE_ENV=development
 ```
 
-Para persistir os canais configurados em produção, crie a tabela no Supabase:
-
-```sql
-create table if not exists public.guild_configs (
-  guild_id text primary key,
-  channel_id text not null,
-  guild_name text,
-  channel_name text,
-  is_primary boolean not null default false,
-  is_active boolean not null default true,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
-create index if not exists guild_configs_active_idx
-  on public.guild_configs (is_active);
-
-create index if not exists guild_configs_primary_idx
-  on public.guild_configs (is_primary)
-  where is_primary = true;
-
-create or replace function public.set_updated_at()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
-
-drop trigger if exists set_guild_configs_updated_at on public.guild_configs;
-
-create trigger set_guild_configs_updated_at
-before update on public.guild_configs
-for each row
-execute function public.set_updated_at();
-
-alter table public.guild_configs disable row level security;
-```
-
-Depois de adicionar o bot ao servidor, configure o canal com:
-
-```bash
-/configurar_canal canal:#nome-do-canal
-```
-
 ---
 
-# ▶️ 4. Rodando o projeto (sem Docker)
+# 🚀 10. Próximos Passos (Roadmap)
 
-Instale as dependências:
+O projeto está em constante evolução. Nossos próximos objetivos são:
 
-```bash
-npm install
-```
-
-Inicie:
-
-```bash
-npm run dev
-```
-
-O bot aparecerá como online no seu servidor.
-
----
-
-# 🐳 5. Rodando com Docker
-
-## Build
-
-```bash
-docker compose build
-```
-
-## Start
-
-```bash
-docker compose up -d
-```
-
-## Logs
-
-```bash
-docker logs -f bot-cristao-discord
-```
-
----
-
-# ⏰ 6. Versículo diário (cron)
-
-O job está em `src/jobs/dailyVerseJob.js`.
-
-Por padrão:
-
-```
-0 8 * * *
-```
-
-Executa todos os dias às **08:00** (TZ configurado no container).
-
-Para testar manualmente:
-
-```bash
-curl -X POST http://localhost:3000/trigger/daily-verse
-```
-
-Exemplo:
-```bash
-0 8 * * * → envia às 08:00
-0 */2 * * * → a cada 2 horas
-*/5 * * * * → a cada 5 minutos (para testes)
-```
----
-
-# 💬 7. Comandos disponíveis
-
-### `/ping`
-
-Testa se o bot está vivo.
-Resposta:
-
-> 🏓 Pong! Estou vivo e orando em background.
-
-### `/versiculo`
-
-Retorna um versículo aleatório com reflexão devocional.
-
-Exemplo:
-
-```
-📖 João 8:32
-> E conhecereis a verdade, e a verdade vos libertará.
-
-💡 A verdade de Cristo não é só uma ideia — é uma pessoa.
-```
-
-### `/configurar_canal`
-
-Define o canal de envio automático para aquele servidor.
-
-### `/status_canal`
-
-Mostra qual canal está configurado no servidor.
-
-### `/desativar_canal`
-
-Desativa os envios automáticos naquele servidor.
-
----
-
-# 🌐 8. API Express
-
-Endpoints:
-
-### `GET /health`
-
-Retorna status do serviço.
-
-### `POST /trigger/daily-verse`
-
-Envia manualmente o versículo diário para o canal configurado.
-
----
-
-# 📦 9. Deploy em VPS (guia rápido)
-
-1. Instale Docker + Docker Compose
-2. Clone o repositório
-3. Crie o `.env`
-4. Rode:
-
-```bash
-docker compose up -d --build
-```
-
-5. O bot ficará online 24/7.
-
----
-
-# 🤝 10. Contribuindo
-
-Pull requests são bem-vindos!
-Este projeto pode crescer para:
-
-* Devocionais automáticos por tema
-* Pedidos de oração
-* Mensagens motivacionais
-* Registro de estudos bíblicos
-* Sistema de discipulado digital
+1.  **🙏 Sistema de Pedidos de Oração:** Canal dedicado para pedidos com contador de pessoas orando.
+2.  **📚 Planos de Leitura:** Envio diário de cronogramas de leitura bíblica.
+3.  **🖼️ Gerador de Imagens:** Criar cartões de versículos estilizados automaticamente.
+4.  **🔍 Busca Bíblica:** Comando `/buscar` para localizar versículos por palavras-chave.
+5.  **🌐 Painel Web:** Interface simples para o administrador ver em quantos servidores o bot está.
 
 ---
 
 # 🙏 11. Propósito
 
-Este bot nasceu com um objetivo simples:
-**usar tecnologia para espalhar fé, esperança e edificação.**
-
-Que este projeto seja útil para igrejas, comunidades e criadores que desejam transformar o Discord num espaço ainda mais saudável e espiritual.
+Este bot nasceu com um objetivo simples: **usar tecnologia para espalhar fé, esperança e edificação.**
 
 ---
 
