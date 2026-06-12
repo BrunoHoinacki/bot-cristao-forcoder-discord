@@ -1,123 +1,125 @@
 # ✝️ Bot Cristão para Discord
 
-### *Mensagens diárias • Versículos • Reflexões • Node.js + Express + Docker*
+<p align="center">
+  <img src="https://cdn-icons-png.flaticon.com/512/2881/2881142.png" width="100" alt="Bot Cristão Logo">
+</p>
 
-Este projeto é um **Bot Cristão para Discord**, desenvolvido em **Node.js**, com uma API em **Express**, agendamentos automáticos de versículos e deploy em **Docker**.
-O propósito é unir **fé e tecnologia**, oferecendo um bot que envia versículos bíblicos com breves reflexões, além de comandos interativos.
-
----
-
-## ⭐ Recursos do Bot
-
-* 📖 **Versículo diário automático** (cron às 08:00 — ajustável)
-* 💡 **Reflexões curtas baseadas na Bíblia**
-* ✨ **Slash commands** (`/versiculo`, `/configurar_canal`, etc.)
-* ⚙️ **Servidor Express para healthcheck e triggers manuais**
-* 🐳 **Deploy completo com Docker + Docker Compose**
-* 🏗️ Arquitetura organizada (comandos, eventos, serviços, jobs)
-* 📊 **Monitoramento de Logs**: Sistema de logs centralizado em canal do Discord.
-* ☁️ **Persistência com Supabase**: Configurações salvas em banco de dados para multi-servidor.
+<p align="center">
+  <strong>Mensagens diárias • Versículos • Reflexões • Node.js • Docker</strong>
+</p>
 
 ---
 
-# 🛠️ 1. Criando o bot no Discord Developer Portal
+Este projeto é um **Bot Cristão para Discord**, desenvolvido com o propósito de unir **fé e tecnologia**. Ele oferece uma forma automatizada e interativa de levar a Palavra de Deus para comunidades, enviando versículos bíblicos com reflexões devocionais diárias.
 
-Siga este passo a passo para criar o app, gerar o token e permitir que o bot entre em seu servidor.
-
-### 1. Acesse o portal
-➡️ [https://discord.com/developers/applications](https://discord.com/developers/applications)
-
-### 2. Crie um novo aplicativo
-* Clique em **New Application**
-* Nomeie como desejar (ex: **Bot Cristão**)
-
-### 3. Vá em **Bot** → **Add Bot**
-
-### 4. Ative permissões importantes
-Ainda na aba **Bot**:
-* **Public Bot** (opcional)
-* **Presence Intent**
-* **Server Members Intent**
-* **Message Content Intent** ✔️
-
-### 5. Pegue o **TOKEN DO BOT**
-* Em **Bot** → clique **Reset Token**
-
-### 6. Defina as permissões do Bot
-Para que os logs e o envio de mensagens funcionem, o bot precisa de permissões explícitas no servidor/canal:
-* **Ver Canais**
-* **Enviar Mensagens**
-* **Inserir Links** (Essencial para os Embeds e Logs)
-* **Ver Histórico de Mensagens**
+> "E conhecereis a verdade, e a verdade vos libertará." — João 8:32
 
 ---
 
-# 📁 2. Estrutura do Projeto
+## ⭐ Recursos Principais
 
-```
-bot-cristao-discord/
-├─ .env
-├─ package.json
-├─ Dockerfile
-├─ docker-compose.yml
-└─ src/
-   ├─ index.js
-   ├─ server.js
-   ├─ discord/
-   │  ├─ client.js
-   │  ├─ commands/           # Comandos de mensagem (!ping)
-   │  ├─ slashCommands/      # Comandos de barra (/versiculo)
-   │  └─ events/             # ready, interactionCreate, messageCreate, etc.
-   ├─ jobs/
-   │  └─ dailyVerseJob.js    # Cron jobs (agendamentos)
-   ├─ services/
-   │  ├─ discordLogService.js # Sistema de logs centralizado no Discord
-   │  ├─ guildConfigService.js # Gestão de banco (Supabase/JSON)
-   │  └─ bibleService.js
-   └─ utils/
-      ├─ logger.js           # Logger de console
-      └─ messageHelper.js    # Formatador de Embeds e Botões
-```
+*   📖 **Versículos Diários:** Envio automático de versículos com reflexões (configurável via Cron).
+*   💡 **Reflexões Contextualizadas:** Cada versículo acompanha uma breve meditação para o dia a dia.
+*   ✨ **Comandos de Barra (Slash Commands):** Interface moderna com `/versiculo`, `/configurar_canal`, etc.
+*   ☁️ **Persistência com Supabase:** Configurações de servidores salvas de forma segura e escalável.
+*   📊 **Sistema de Monitoramento:** Logs centralizados em um canal do Discord para fácil administração.
+*   🐳 **Containerização:** Pronto para deploy rápido com Docker e Docker Compose.
 
 ---
 
-# ⚙️ 3. Configurando o `.env`
+## 🚀 Como Começar
 
-Crie o arquivo `.env` na raiz:
+### 1. Requisitos Próximos
+*   Node.js 20+ ou Docker
+*   Conta no [Supabase](https://supabase.com/) (Gratuito)
+*   Aplicativo no [Discord Developer Portal](https://discord.com/developers/applications)
+
+### 2. Configuração do Bot no Discord
+1.  Crie um novo App no Portal do Discord.
+2.  Na aba **Bot**, ative as **Privileged Gateway Intents** (Presença, Membros e Conteúdo de Mensagem).
+3.  Defina as permissões necessárias:
+    *   *Ver Canais, Enviar Mensagens, Inserir Links, Ver Histórico*.
+
+### 3. Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto seguindo o modelo:
 
 ```env
-DISCORD_TOKEN=SEU_TOKEN_AQUI
-DISCORD_CLIENT_ID=ID_DO_APP
-DISCORD_LOG_CHANNEL_ID=ID_DO_CANAL_DE_LOGS
-PRIMARY_GUILD_ID=ID_DO_SERVIDOR_PRINCIPAL
-SUPABASE_URL=SUA_URL_DO_SUPABASE
-SUPABASE_SERVICE_ROLE_KEY=SUA_SERVICE_ROLE_KEY_DO_SUPABASE
+DISCORD_TOKEN=seu_token_aqui
+DISCORD_CLIENT_ID=id_do_app
+DISCORD_LOG_CHANNEL_ID=id_do_canal_de_logs
+PRIMARY_GUILD_ID=id_do_servidor_principal
+
+# Banco de Dados (Supabase)
+SUPABASE_URL=sua_url_supabase
+SUPABASE_SERVICE_ROLE_KEY=sua_chave_secret
 SUPABASE_GUILD_CONFIG_TABLE=guild_configs
+
+# Configurações de Sistema
 PORT=3000
 TZ=America/Sao_Paulo
-NODE_ENV=development
+NODE_ENV=production
 ```
 
 ---
 
-# 🚀 10. Próximos Passos (Roadmap)
+## 🛠️ Instalação e Execução
 
-O projeto está em constante evolução. Nossos próximos objetivos são:
+### Com Docker (Recomendado)
+```bash
+docker compose up -d --build
+```
 
-1.  **🙏 Sistema de Pedidos de Oração:** Canal dedicado para pedidos com contador de pessoas orando.
-2.  **📚 Planos de Leitura:** Envio diário de cronogramas de leitura bíblica.
-3.  **🖼️ Gerador de Imagens:** Criar cartões de versículos estilizados automaticamente.
-4.  **🔍 Busca Bíblica:** Comando `/buscar` para localizar versículos por palavras-chave.
-5.  **🌐 Painel Web:** Interface simples para o administrador ver em quantos servidores o bot está.
-
----
-
-# 🙏 11. Propósito
-
-Este bot nasceu com um objetivo simples: **usar tecnologia para espalhar fé, esperança e edificação.**
+### Manualmente
+```bash
+npm install
+npm start
+```
 
 ---
 
-# 📜 Licença
+## 💬 Comandos Disponíveis
 
-MIT – livre para modificar, estudar e usar.
+| Comando | Descrição |
+| :--- | :--- |
+| `/versiculo` | Recebe um versículo aleatório com uma reflexão. |
+| `/configurar_canal` | Define em qual canal o bot enviará as mensagens automáticas. |
+| `/status_canal` | Mostra a configuração atual do servidor. |
+| `/desativar_canal` | Pausa os envios automáticos no servidor. |
+| `/ping` | Verifica a latência e o status do bot. |
+
+---
+
+## 📈 Roadmap (Próximos Passos)
+
+- [ ] **🙏 Pedidos de Oração:** Sistema para membros solicitarem e interagirem com orações.
+- [ ] **📚 Planos de Leitura:** Cronogramas diários para leitura completa da Bíblia.
+- [ ] **🖼️ Cards Visuais:** Geração de imagens automáticas com o versículo do dia.
+- [ ] **🔍 Busca por Palavra:** Encontrar versículos específicos via comando.
+- [ ] **🌐 Dashboard:** Painel administrativo web para controle de múltiplos servidores.
+
+---
+
+## 🤝 Contribuição
+
+Contribuições são o que tornam a comunidade open source um lugar incrível para aprender, inspirar e criar. Qualquer contribuição que você fizer será **muito apreciada**.
+
+1. Faça um Fork do projeto
+2. Crie sua Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a Branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+---
+
+## 🙏 Propósito
+Este bot nasceu para transformar a tecnologia em uma ferramenta de edificação. Que cada linha de código sirva para espalhar fé, esperança e o amor de Cristo em todas as comunidades do Discord.
+
+---
+
+## 📜 Licença
+Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
+
+---
+<p align="center">
+  Desenvolvido com ☕ e Fé por <strong>Forcoder</strong>
+</p>
