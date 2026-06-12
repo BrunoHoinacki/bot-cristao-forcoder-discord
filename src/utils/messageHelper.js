@@ -61,8 +61,8 @@ function createVerseEmbed({ verse, reference, reflection, tag }) {
   const color = TAG_COLORS[tag] || 0x7289da; // Blurple padrão do Discord
   const keyword = IMAGE_KEYWORDS[tag] || "bible,nature,worship,cross,spirituality";
   
-  // URL do Unsplash com keywords para variar
-  const imageUrl = `https://source.unsplash.com/featured/800x450/?christian,${keyword},${tag}&sig=${Math.floor(Math.random() * 1000)}`;
+  // URL do Unsplash estável
+  const imageUrl = `https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=800&auto=format&fit=crop&sig=${Math.floor(Math.random() * 1000)}`;
 
   const embed = new EmbedBuilder()
     .setColor(color)
