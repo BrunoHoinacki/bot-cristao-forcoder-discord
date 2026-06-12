@@ -3,7 +3,7 @@ const { sendDiscordLog, sendDiscordErrorLog } = require("../../services/discordL
 const { getAllGuildConfigs } = require("../../services/guildConfigService");
 
 module.exports = {
-  name: "ready",
+  name: "clientReady",
   once: true,
   async execute(client) {
     // 1. Sincronizar Slash Commands

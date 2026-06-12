@@ -47,7 +47,11 @@ async function sendDiscordLog(client, title, details, context = {}) {
 
     await channel.send({ content });
   } catch (logErr) {
-    logger.error("Erro ao enviar log para o Discord:", logErr);
+    if (logErr.code === 50001) {
+      logger.error(`ERRO DE PERMISSÃO: O bot não tem acesso ao canal de log ${channelId}. Verifique se o bot está no servidor e se tem permissão de "Ver Canal" e "Enviar Mensagens".`);
+    } else {
+      logger.error("Erro ao enviar log para o Discord:", logErr);
+    }
   }
 }
 
