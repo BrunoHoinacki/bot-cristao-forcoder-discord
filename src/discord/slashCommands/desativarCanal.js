@@ -8,7 +8,7 @@ module.exports = {
     .setDMPermission(false)
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
   async execute(interaction) {
-    const removed = removeGuildChannel(interaction.guildId);
+    const removed = await removeGuildChannel(interaction.guildId);
 
     await interaction.reply({
       content: removed

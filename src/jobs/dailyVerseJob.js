@@ -20,7 +20,7 @@ function scheduleDailyVerseJob(client) {
   // Job de Divulgação Forcoder (Todo dia às 17:00)
   cron.schedule("0 17 * * *", async () => {
     logger.info("Iniciando Job de Divulgação Forcoder...");
-    const guildConfigs = getAllGuildConfigs();
+    const guildConfigs = await getAllGuildConfigs();
     const entries = Object.entries(guildConfigs);
 
     for (const [guildId, channelId] of entries) {
@@ -40,7 +40,7 @@ function scheduleDailyVerseJob(client) {
   // Job de Explicação de Funções (Todo dia às 15:00)
   cron.schedule("0 15 * * *", async () => {
     logger.info("Iniciando Job de Explicação de Funções...");
-    const guildConfigs = getAllGuildConfigs();
+    const guildConfigs = await getAllGuildConfigs();
     const entries = Object.entries(guildConfigs);
 
     for (const [guildId, channelId] of entries) {
@@ -60,7 +60,7 @@ function scheduleDailyVerseJob(client) {
   // Job de Divulgação (Todo dia às 10:00)
   cron.schedule("0 10 * * *", async () => {
     logger.info("Iniciando Job de Divulgação...");
-    const guildConfigs = getAllGuildConfigs();
+    const guildConfigs = await getAllGuildConfigs();
     const entries = Object.entries(guildConfigs);
 
     for (const [guildId, channelId] of entries) {
@@ -80,7 +80,7 @@ function scheduleDailyVerseJob(client) {
   // Job de Benção Aleatória (ex: a cada 4 horas no minuto 30)
   cron.schedule("30 */4 * * *", async () => {
     logger.info("Iniciando Job de Benção Aleatória...");
-    const guildConfigs = getAllGuildConfigs();
+    const guildConfigs = await getAllGuildConfigs();
     const entries = Object.entries(guildConfigs);
 
     for (const [guildId, channelId] of entries) {
@@ -108,7 +108,7 @@ function scheduleDailyVerseJob(client) {
 
   cron.schedule(cronExpression, async () => {
     try {
-      const guildConfigs = getAllGuildConfigs();
+      const guildConfigs = await getAllGuildConfigs();
       const entries = Object.entries(guildConfigs);
 
       if (!entries.length) {

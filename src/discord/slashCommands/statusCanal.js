@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-const { getGuildChannelId } = require("../../services/guildConfigService");
+const { getGuildConfig } = require("../../services/guildConfigService");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,9 +8,9 @@ module.exports = {
     .setDMPermission(false)
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
   async execute(interaction) {
-    const channelId = getGuildChannelId(interaction.guildId);
+    const config = await getGuildConfig(interaction.guildId);
 
-    if (!channelId) {
+    if (!config?.channelId) {
       await interaction.reply({
         content: "ℹ️ Nenhum canal configurado ainda. Use /configurar_canal.",
         ephemeral: true
@@ -19,7 +19,12 @@ module.exports = {
     }
 
     await interaction.reply({
-      content: `📌 Canal configurado atualmente: <#${channelId}>.`,
+      content: [
+        `📌 Canal configurado atualmente: <#${config.channelId}>.`,
+        config.isPrimary ? "⭐ Este é o servidor principal." : null
+      ]
+        .filter(Boolean)
+        .join("\n"),
       ephemeral: true
     });
   }

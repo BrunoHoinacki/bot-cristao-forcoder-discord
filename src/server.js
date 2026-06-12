@@ -16,7 +16,7 @@ function startServer(client) {
   // Endpoint para disparar versículo manualmente (ex: webhook, teste)
   app.post("/trigger/daily-verse", async (req, res) => {
     try {
-      const guildConfigs = getAllGuildConfigs();
+      const guildConfigs = await getAllGuildConfigs();
       const entries = Object.entries(guildConfigs);
 
       if (!entries.length) {

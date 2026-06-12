@@ -21,7 +21,10 @@ module.exports = {
   async execute(interaction) {
     const channel = interaction.options.getChannel("canal", true);
 
-    setGuildChannel(interaction.guildId, channel.id);
+    await setGuildChannel(interaction.guildId, channel.id, {
+      guildName: interaction.guild?.name,
+      channelName: channel.name
+    });
 
     await interaction.reply({
       content: `✅ Canal configurado com sucesso: ${channel}.`,
