@@ -158,7 +158,7 @@ function scheduleDailyVerseJob(client) {
     }
   });
 
-  logger.info(`Job agendado com CRON: "${expression}".`);
+  logger.info(`Job agendado com CRON: "${cronExpression}".`);
 }
 
 module.exports = { scheduleDailyVerseJob };

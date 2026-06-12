@@ -183,7 +183,3 @@ module.exports = {
   createFeaturesEmbed,
   createForCoderEmbed
 };
-;
-teFeaturesEmbed,
-  createForCoderEmbed
-};

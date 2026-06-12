@@ -2,12 +2,14 @@ const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js"
 const path = require("path");
 const fs = require("fs");
 const logger = require("../utils/logger");
+const { sendDiscordErrorLog } = require("../services/discordLogService");
 
 async function initDiscordClient() {
   const client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.DirectMessages,
       GatewayIntentBits.MessageContent
     ],
     partials: [Partials.Channel]
@@ -15,6 +17,15 @@ async function initDiscordClient() {
 
   client.commands = new Collection();
   client.slashCommands = new Collection();
+
+  client.on("error", async err => {
+    logger.error("Erro no client do Discord:", err);
+    await sendDiscordErrorLog(client, "Erro no client do Discord", err);
+  });
+
+  client.on("warn", warning => {
+    logger.warn("Aviso do client do Discord:", warning);
+  });
 
   // Carrega comandos
   const commandsPath = path.join(__dirname, "commands");
